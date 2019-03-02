@@ -11,6 +11,9 @@ import {
   faBars,
   faTimes,
   faLink,
+  faInfo,
+  faMagic,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -38,6 +41,9 @@ library.add(
   faBars,
   faTimes,
   faEdit,
+  faInfo,
+  faMagic,
+  faExclamationTriangle,
   faTwitter,
   faLinkedinIn,
   faGithub,

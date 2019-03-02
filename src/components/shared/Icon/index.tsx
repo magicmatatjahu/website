@@ -11,7 +11,7 @@ export interface IconProps {
   iconPrefix?: string;
 }
 
-const Icon: React.StatelessComponent<IconProps> = ({
+const Icon: React.FunctionComponent<IconProps> = ({
   iconName,
   iconPrefix = "fab",
 }) => {
