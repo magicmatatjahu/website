@@ -12,7 +12,7 @@ class CopyDocs {
       console.log(`Copying documentation for release ${key} from tag ${tag}`);
 
       let err: Error;
-      [err] = await to(GitClient.checkoutTag(tag));
+      [err] = await to(GitClient.checkoutTag("docs", tag));
       if (err) throw err;
 
       const out = `${output}/${key}`;
@@ -26,7 +26,7 @@ class CopyDocs {
       console.log(`Copying documentation from branch ${branch}`);
 
       let err: Error;
-      [err] = await to(GitClient.checkout(branch as string));
+      [err] = await to(GitClient.checkout("docs", branch as string));
       if (err) throw err;
 
       const out = `${output}/${branch}`;

@@ -1,0 +1,1 @@
+export interface Destinations { [key: string]: string };

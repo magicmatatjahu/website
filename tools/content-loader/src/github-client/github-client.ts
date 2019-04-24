@@ -35,7 +35,7 @@ class GitHubClient {
     const [err, response] = await to<Response<ReposGetReleaseResponse[]>>(
       this.octokit.repos.listReleases({
         owner: this.config.organization,
-        repo: this.config.repository,
+        repo: this.config.coreRepository,
       }),
     );
     if (err) throw new VError(err, `while getting list of releases`);
@@ -47,7 +47,7 @@ class GitHubClient {
     const [err, response] = await to<Response<ReposGetBranchResponse>>(
       this.octokit.repos.getBranch({
         owner: this.config.organization,
-        repo: this.config.repository,
+        repo: this.config.coreRepository,
         branch: branch,
       }),
     );
@@ -60,7 +60,7 @@ class GitHubClient {
     const [err, response] = await to<Response<ReposListTagsResponseItem[]>>(
       this.octokit.repos.listTags({
         owner: this.config.organization,
-        repo: this.config.repository,
+        repo: this.config.coreRepository,
         per_page: 100,
       }),
     );

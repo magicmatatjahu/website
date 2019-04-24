@@ -2,49 +2,50 @@ import to from "await-to-js";
 import { VError } from "verror";
 import { exec } from "child_process";
 
+import { Destinations } from "../types";
 import { CoreConfig } from "../config";
 
 class GitClient {
   private config: CoreConfig;
-  private destination: string;
+  private destinations: Destinations;
 
   constructor() {
     this.config = {} as CoreConfig;
-    this.destination = "";
+    this.destinations = {};
   }
 
-  withConfig = (config: CoreConfig, destination: string) => {
+  withConfig = (config: CoreConfig, destinations: Destinations) => {
     this.config = config;
-    this.destination = destination;
+    this.destinations = destinations;
   };
 
-  clone = async () => {
-    const repository = `https://github.com/${this.config.organization}/${
-      this.config.repository
+  clone = async (destination: string, repo: string = this.config.coreRepository, org: string = this.config.organization) => {
+    const repository = `https://github.com/${org}/${
+      repo
     }.git`;
 
     const [err] = await to(
-      this.execShellCommand(`git clone "${repository}" "${this.destination}"`),
+      this.execShellCommand(`git clone "${repository}" "${this.destinations[destination]}"`),
     );
 
     if (err)
       throw new VError(
         err,
-        `while cloning ${repository} to ${this.destination}`,
+        `while cloning ${repository} to ${this.destinations[destination]}`,
       );
   };
 
-  checkout = async (branch: string) => {
+  checkout = async (destination: string, branch: string) => {
     const [err] = await to(
       this.execShellCommand(
-        `cd "${this.destination}" && git checkout "${branch}"`,
+        `cd "${this.destinations[destination]}" && git checkout "${branch}"`,
       ),
     );
     if (err) throw new VError(err, `while checkout to branch: ${branch}`);
   };
 
-  checkoutTag = async (tag: string) => {
-    const [err] = await to(this.checkout(`tags/${tag}`));
+  checkoutTag = async (destination: string, tag: string) => {
+    const [err] = await to(this.checkout(destination, `tags/${tag}`));
     if (err) throw err;
   };
 
