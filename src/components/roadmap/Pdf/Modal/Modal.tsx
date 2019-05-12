@@ -4,12 +4,7 @@ import qs from "qs";
 
 import Grid from "@styled/Grid";
 
-import ModalHeader from "@components/roadmap/Modal/Header";
-import ModalContent from "@components/roadmap/Modal/Content";
-
 import RoadmapService from "@components/roadmap/service";
-
-import { Ticket } from "../types";
 
 import { Wrapper, StyledModal, ContentWrapper } from "./styled";
 
@@ -17,17 +12,17 @@ export const WithoutModal: React.FunctionComponent = ({ children }) => (
   <Wrapper>
     <Grid.Container>
       <Grid.Row>
-        <Grid.Unit df={1} md={0} />
-        <Grid.Unit df={10} md={12}>
-          {children}
-        </Grid.Unit>
-        <Grid.Unit df={1} md={0} />
+        <Grid.Unit df={12}>{children}</Grid.Unit>
       </Grid.Row>
     </Grid.Container>
   </Wrapper>
 );
 
-const Modal: React.FunctionComponent = () => {
+interface Props {
+  openComponent: React.ReactNode;
+}
+
+const Modal: React.FunctionComponent<Props> = ({ openComponent }) => {
   const {
     pageContext: { ticket },
     location,
@@ -54,16 +49,11 @@ const Modal: React.FunctionComponent = () => {
     navigate(path);
   };
 
-  const content = (
-    <ContentWrapper>
-      <ModalHeader ticket={ticket} />
-      <ModalContent body={ticket.body} />
-    </ContentWrapper>
-  );
+  const content = <ContentWrapper>dupa</ContentWrapper>;
 
   return (
     <StyledModal
-      openComponent={null}
+      openComponent={openComponent}
       onRequestClose={getExitLocation}
       show={true}
     >

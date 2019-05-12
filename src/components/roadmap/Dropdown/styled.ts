@@ -1,21 +1,6 @@
 import styled from "@styled";
 
-export const DropDownWrapper = styled.div`
-  position: relative;
-  text-align: center;
-  z-index: 1;
-
-  &:after {
-    content: "";
-    width: 100%;
-    position: absolute;
-    height: 1px;
-    background: #d5dce3;
-    top: 50%;
-    left: 0;
-    z-index: -1;
-  }
-`;
+export const DropDownWrapper = styled.div``;
 
 export const DropdownDropElementWrapper = styled.div`
   position: relative;

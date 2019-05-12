@@ -37,6 +37,28 @@ export const HeaderWrapper = styled.header`
   }
 `;
 
+export const HeaderButtonsWrapper = styled.div`
+  position: relative;
+  text-align: center;
+  z-index: 1;
+
+  > div {
+    display: inline-block;
+    padding: 0 12px;
+  }
+
+  &:after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    height: 1px;
+    background: #d5dce3;
+    top: 50%;
+    left: 0;
+    z-index: -1;
+  }
+`;
+
 /* Release */
 export const ReleaseWrapper = styled.div`
   position: relative;
