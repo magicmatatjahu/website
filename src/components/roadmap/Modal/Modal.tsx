@@ -46,10 +46,11 @@ const Modal: React.FunctionComponent<Props> = () => {
     if (
       state &&
       state.filters &&
-      state.filters.capabilities &&
-      Object.keys(state.filters.capabilities).length
+      ((state.filters.capabilities && state.filters.capabilities.length) ||
+        (state.filters.releases && state.filters.releases.length))
     ) {
       const queryString = qs.stringify({
+        releases: state.filters.releases,
         capabilities: state.filters.capabilities,
       });
       path = `/roadmap/?${queryString}`;
