@@ -70,7 +70,7 @@ export const DropdownIcon = styled.div`
   }
 `;
 
-export const DropdownListWrapper = styled.div`
+export const DropdownContent = styled.div`
   position: absolute;
   top: 8px;
   left: 50%;
@@ -97,8 +97,28 @@ export const DropdownListWrapper = styled.div`
   }
 `;
 
+export const DropdownListWrapper = styled.div`
+  margin: 0;
+
+  &:first-child {
+    margin-bottom: 38px;
+  }
+`;
+
+export const DropdownListHeader = styled.header`
+  margin: 0 0 16px 0;
+
+  h5 {
+    text-align: center;
+  }
+`;
+
 export const DropdownList = styled.ul`
   margin: 0;
+
+  &:first-child {
+    margin-bottom: 32px;
+  }
 `;
 
 export const DropdownListItem = styled.li`

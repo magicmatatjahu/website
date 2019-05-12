@@ -38,9 +38,22 @@ export class TicketsProcessor {
     return this;
   }
 
-  filterCapabilitiesByQueryParams(filters: any, capabilities: Capability[]) {
+  filterReleasesByQueryParams(releasesFilters: string[]) {
+    if (!releasesFilters.length) return this;
+
+    this.filteredReleases = this.filteredReleases.filter(release =>
+      releasesFilters.includes(release.displayName),
+    );
+
+    return this;
+  }
+
+  filterCapabilitiesByQueryParams(
+    capabilitiesFilters: string[],
+    capabilities: Capability[],
+  ) {
     this.filteredReleases = this.filteredReleases.map(release => {
-      if (!filters.capabilities.length) return release;
+      if (!capabilitiesFilters.length) return release;
 
       return {
         displayName: release.displayName,
@@ -51,7 +64,7 @@ export class TicketsProcessor {
             );
 
             if (searchedCapability) {
-              return filters.capabilities.includes(
+              return capabilitiesFilters.includes(
                 searchedCapability.frontmatter.id,
               );
             }

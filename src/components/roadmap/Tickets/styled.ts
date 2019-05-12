@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
 `;
 
 export const HeaderWrapper = styled.header`
-  z-index: 2;
+  z-index: 151;
 
   > h2 {
     text-align: center;

@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 
+import H from "@components/shared/H";
 import Icon from "@components/shared/Icon";
 import Checkbox from "@components/shared/Checkbox";
 
@@ -9,7 +10,9 @@ import TicketsService from "@components/roadmap/Tickets/service";
 import { Capability } from "../types";
 
 import {
+  DropdownContent,
   DropdownListWrapper,
+  DropdownListHeader,
   DropdownList,
   DropdownListItem,
   DropdownListItemName,
@@ -17,10 +20,41 @@ import {
 
 const DropElement: React.FunctionComponent = () => {
   const { capabilities } = useContext(RoadmapService);
-  const { filters, setCapability } = useContext(TicketsService);
+  const { extractReleases, filters, setRelease, setCapability } = useContext(
+    TicketsService,
+  );
 
-  return (
+  const releasesList = (
     <DropdownListWrapper>
+      <DropdownListHeader>
+        <H as="h5">Releases</H>
+      </DropdownListHeader>
+      <DropdownList>
+        {extractReleases().map((release, idx) => (
+          <DropdownListItem key={idx}>
+            <label>
+              <DropdownListItemName>
+                {release === "Future" ? "Future planned" : release}
+              </DropdownListItemName>
+              <Checkbox
+                checked={filters.releases.includes(release)}
+                onChange={() => null}
+                onClick={() => {
+                  setRelease(release);
+                }}
+              />
+            </label>
+          </DropdownListItem>
+        ))}
+      </DropdownList>
+    </DropdownListWrapper>
+  );
+
+  const capabilitiesList = (
+    <DropdownListWrapper>
+      <DropdownListHeader>
+        <H as="h5">Capabilities</H>
+      </DropdownListHeader>
       <DropdownList>
         {capabilities.map((capability, idx) => (
           <DropdownListItem key={idx}>
@@ -42,6 +76,13 @@ const DropElement: React.FunctionComponent = () => {
         ))}
       </DropdownList>
     </DropdownListWrapper>
+  );
+
+  return (
+    <DropdownContent>
+      {capabilitiesList}
+      {releasesList}
+    </DropdownContent>
   );
 };
 
