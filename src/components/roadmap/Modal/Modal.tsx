@@ -13,20 +13,6 @@ import { Ticket } from "../types";
 
 import { Wrapper, StyledModal, ContentWrapper } from "./styled";
 
-export const WithoutModal: React.FunctionComponent = ({ children }) => (
-  <Wrapper>
-    <Grid.Container>
-      <Grid.Row>
-        <Grid.Unit df={1} md={0} />
-        <Grid.Unit df={10} md={12}>
-          {children}
-        </Grid.Unit>
-        <Grid.Unit df={1} md={0} />
-      </Grid.Row>
-    </Grid.Container>
-  </Wrapper>
-);
-
 const Modal: React.FunctionComponent = () => {
   const {
     pageContext: { ticket },
