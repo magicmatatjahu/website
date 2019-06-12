@@ -107,6 +107,7 @@
     "lodash": "^4.17.11",
     "markdownlint-cli": "^0.13.0",
     "prettier": "^1.15.2",
+    "schema-dts": "^0.4.1",
     "source-map-explorer": "^1.8.0",
     "ts-node": "^7.0.1",
     "tslib": "^1.9.3",

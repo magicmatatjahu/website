@@ -8,7 +8,7 @@ import enLandingPage from "../../../content/i18n/en/landing-page.json";
 import enDocs from "../../../content/i18n/en/docs.json";
 import enBlog from "../../../content/i18n/en/blog.json";
 import enRoadmap from "../../../content/i18n/en/roadmap.json";
-import enSiteMetadata from "../../../content/i18n/en/siteMetadata.json";
+import enSeo from "../../../content/i18n/en/seo.json";
 import enUtils from "../../../content/i18n/en/utils.json";
 
 const intl: Internationalization = {
@@ -20,7 +20,7 @@ const intl: Internationalization = {
     docs: enDocs,
     blog: enBlog,
     roadmap: enRoadmap,
-    siteMetadata: enSiteMetadata,
+    seo: enSeo,
     utils: enUtils,
   },
 };
