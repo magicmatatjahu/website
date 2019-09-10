@@ -77,6 +77,7 @@ export const DocsLayout: React.FunctionComponent<DocsLayoutProps> = ({
                 sm={12}
                 className="grid-unit-content"
                 withoutPadding={true}
+                id="docs-content"
               >
                 <TitleHeader marginBottom={sourcesLength === 1}>
                   {displayName}
