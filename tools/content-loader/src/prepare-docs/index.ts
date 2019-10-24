@@ -107,6 +107,7 @@ const prepareDocs = async (coreConfig: CoreConfig) => {
 const preparePreviewDocs = async () => {
   const outputPath = resolve(docsConfig.outputPath);
   const sourcePath = resolve(docsConfig.sourcePath);
+  const outputDocsVersion = resolve(docsConfig.outputDocsVersion);
 
   let [err] = await to(makeDir(outputPath));
   if (err) {
@@ -122,6 +123,19 @@ const preparePreviewDocs = async () => {
   if (err) {
     throw err;
   }
+
+  // console.log(`Generating documentation versions file to ${outputDocsVersion}`);
+  // [err] = await to(
+  //   DocsVersions.generate(
+  //     {
+  //       branches
+  //     },
+  //     outputDocsVersion,
+  //   ),
+  // );
+  // if (err) {
+  //   throw err;
+  // }
 };
 
 export default async (coreConfig: CoreConfig) => {

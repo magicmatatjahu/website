@@ -214,7 +214,7 @@ export const preparePreviewPaths = ({
   const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${
     !version || version === DOCS_LATEST_VERSION ? latestVersion : version
   }/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
-  const modalUrlPrefix = `/${DOCS_PATH_PREFIX}/${
+  const modalUrlPrefix = `/${
     !version || version === DOCS_LATEST_VERSION ? latestVersion : version
   }/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
 
