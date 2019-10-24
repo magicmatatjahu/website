@@ -52,16 +52,13 @@ else
 	@echo "PREVIEW_SOURCE_DIR is not a recognized env!"
 endif
 
-build-website:
-	export BUILD_FOR="website"
+build-website: export BUILD_FOR="website"
 	npm run build:prod
 
-build-docs-preview:
-	export BUILD_FOR="docs-preview"
+build-docs-preview: export BUILD_FOR="docs-preview"
 	npm run build:prod
 
-build-community-preview:
-	export BUILD_FOR="community-preview"
+build-community-preview: export BUILD_FOR="community-preview"
 	npm run build:prod
 
 prepare-functions:
