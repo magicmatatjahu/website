@@ -47,7 +47,6 @@ const preparePreviewCommunity = async () => {
     throw err;
   }
 
-  console.log(`Copy community content to ${outputPath}`);
   [err] = await to(CopyCommunity.do(sourcePath, outputPath));
   if (err) {
     throw err;

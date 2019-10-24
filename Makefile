@@ -39,10 +39,18 @@ prepare-content-website:
 	./scripts/prepare-content.sh --prepare-for "website"
 
 prepare-content-docs-preview:
-	./scripts/prepare-content.sh --prepare-for "docs-preview" --docs-branches "preview" --docs-src-dir "../../"
+ifdef PREVIEW_SOURCE_DIR
+	./scripts/prepare-content.sh --prepare-for "docs-preview" --docs-src-dir $(PREVIEW_SOURCE_DIR) --docs-branches "preview"
+else
+	@echo "PREVIEW_SOURCE_DIR is not a recognized env!"
+endif
 
 prepare-content-community-preview:
-	./scripts/prepare-content.sh --prepare-for "community-preview" --community-src-dir "../../"
+ifdef PREVIEW_SOURCE_DIR
+	./scripts/prepare-content.sh --prepare-for "community-preview" --community-src-dir $(PREVIEW_SOURCE_DIR)
+else
+	@echo "PREVIEW_SOURCE_DIR is not a recognized env!"
+endif
 
 build-website:
 	export BUILD_FOR="website"
