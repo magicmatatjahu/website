@@ -100,12 +100,8 @@ fetch() {
 main() {
     init "${ARGS[@]}"
 
-    if [[ -z "${NETLIFY_CI}" ]]; then
-        echo "Co się nauczyliśmy to nasze"
-    else
-        step "Fetching"
-        fetch
-        pass "Fetched"
-    fi
+    step "Fetching"
+    fetch
+    pass "Fetched"
 }
 main
