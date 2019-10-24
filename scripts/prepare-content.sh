@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 # Script for preparing content for kyma-project.io
 
-set -e
-set -o pipefail
-
-pushd "$(pwd)" > /dev/null
+set -eo pipefail
 
 on_error() {
     echo -e "${RED}✗ Failed${NC}"
@@ -38,13 +35,31 @@ step() {
 }
 
 init() {
-    BRANCHES=''
+    PREPARE_FOR=''
+    DOCS_BRANCHES=''
+    APP_DOCS_SOURCE_DIR=''
+    APP_COMMUNITY_SOURCE_DIR=''
 
     while test $# -gt 0; do
         case "$1" in
-            --branches | -b)
+            --prepare-for)
                 shift
-                BRANCHES=$1
+                PREPARE_FOR=$1
+                shift
+                ;;
+            --docs-branches)
+                shift
+                DOCS_BRANCHES=$1
+                shift
+                ;;
+            --docs-src-dir)
+                shift
+                APP_DOCS_SOURCE_DIR=$1
+                shift
+                ;;
+            --community-src-dir)
+                shift
+                APP_COMMUNITY_SOURCE_DIR=$1
                 shift
                 ;;
             --help | -h)
@@ -56,16 +71,23 @@ init() {
                 ;;
         esac
     done
-    readonly BRANCHES
+
+    readonly PREPARE_FOR
+    readonly DOCS_BRANCHES
+    readonly APP_DOCS_SOURCE_DIR
+    readonly APP_COMMUNITY_SOURCE_DIR
 }
 
 fetch() {
-    APP_DOCS_BRANCHES="${BRANCHES}" \
+    APP_PREPARE_FOR="${PREPARE_FOR}" \
+    APP_DOCS_BRANCHES="${DOCS_BRANCHES}" \
     APP_DOCS_REPOSITORY="kyma" \
+    APP_DOCS_SOURCE_DIR="${APP_DOCS_SOURCE_DIR}" \
     APP_DOCS_OUTPUT="${CONTENT_DIR}/docs" \
     APP_DOCS_VERSIONS_CONFIG_FILE="${CONTENT_DIR}/docs/versions.json" \
-    APP_COMMUNITY_OUTPUT="${CONTENT_DIR}/community" \
     APP_COMMUNITY_REPOSITORY="community" \
+    APP_COMMUNITY_SOURCE_DIR="${APP_COMMUNITY_SOURCE_DIR}" \
+    APP_COMMUNITY_OUTPUT="${CONTENT_DIR}/community" \
     APP_ROADMAP_REPOSITORY="community" \
     APP_ROADMAP_OUTPUT="${CONTENT_DIR}/roadmap" \
     APP_ROADMAP_CAPABILITIES_OUTPUT="${CONTENT_DIR}/roadmap/capabilities" \

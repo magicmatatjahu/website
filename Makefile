@@ -1,29 +1,56 @@
-netlify-deploy-preview: clear-cache validate test prepare-content build prepare-functions
-netlify-production: clear-cache validate test prepare-content build prepare-functions
+.PHONY: 
+	netlify-deploy-preview 
+	netlify-production 
+	netlify-docs-preview 
+	netlify-community-preview 
+	clear-cache 
+	validate 
+	test 
+	prepare-content-website 
+	prepare-content-docs-preview 
+	prepare-content-community-preview 
+	build-website
+	build-docs-preview
+	build-community-preview
+	prepare-functions
 
-.PHONY: clear-cache
+netlify-deploy-preview: clear-cache validate test prepare-content-website build-website prepare-functions
+netlify-production: clear-cache prepare-content-website build-website prepare-functions
+netlify-docs-preview: clear-cache prepare-content-docs-preview build-docs-preview
+netlify-community-preview: clear-cache pprepare-content-community-preview build-community-preview
+
 clear-cache:
 	make -C "./tools/content-loader" clear-cache
 
-.PHONY: validate
 validate:
 	npm run conflict-check
 	npm run lint-check
 	npm run markdownlint
 	npm run type-check
 
-.PHONY: test
 test:
 	npm run test
 
-.PHONY: prepare-content
-prepare-content:
-	./scripts/prepare-content.sh
+prepare-content-website:
+	./scripts/prepare-content.sh --prepare-for="website"
 
-.PHONY: build
-build:
+prepare-content-docs-preview:
+	./scripts/prepare-content.sh --prepare-for="docs-preview" --docs-branches="preview" 
+
+prepare-content-community-preview:
+	./scripts/prepare-content.sh --prepare-for="community-preview"
+
+build-website:
+	export BUILD_FOR="website"
 	npm run build:prod
 
-.PHONY: prepare-functions
+build-docs-preview:
+	export BUILD_FOR="docs-preview"
+	npm run build:prod
+
+build-community-preview:
+	export BUILD_FOR="community-preview"
+	npm run build:prod
+
 prepare-functions:
 	npm run build:functions
