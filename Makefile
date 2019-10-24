@@ -3,7 +3,8 @@
 	netlify-production 
 	netlify-docs-preview 
 	netlify-community-preview 
-	clear-cache 
+	clear-cache
+	resolve
 	validate 
 	test 
 	prepare-content-website 
@@ -16,11 +17,14 @@
 
 netlify-deploy-preview: clear-cache validate test prepare-content-website build-website prepare-functions
 netlify-production: clear-cache prepare-content-website build-website prepare-functions
-netlify-docs-preview: clear-cache prepare-content-docs-preview build-docs-preview
-netlify-community-preview: clear-cache prepare-content-community-preview build-community-preview
+netlify-docs-preview: clear-cache resolve prepare-content-docs-preview build-docs-preview
+netlify-community-preview: clear-cache resolve prepare-content-community-preview build-community-preview
 
 clear-cache:
 	make -C "./tools/content-loader" clear-cache
+
+resolve:
+	npm install
 
 validate:
 	npm run conflict-check
