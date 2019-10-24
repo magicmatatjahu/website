@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Script for preparing content for kyma-project.io
+# Generic script for preparing content for kyma-project.io
 
 set -eo pipefail
 
@@ -8,11 +8,6 @@ on_error() {
     exit 1
 }
 trap on_error ERR
-
-on_exit() {
-    popd > /dev/null
-}
-trap on_exit EXIT
 
 readonly SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly CONTENT_DIR="${SCRIPTS_DIR}/../content"
