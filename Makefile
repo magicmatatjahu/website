@@ -35,10 +35,10 @@ prepare-content-website:
 	./scripts/prepare-content.sh --prepare-for="website"
 
 prepare-content-docs-preview:
-	./scripts/prepare-content.sh --prepare-for="docs-preview" --docs-branches="preview" 
+	./scripts/prepare-content.sh --prepare-for="docs-preview" --docs-branches="preview" --docs-src-dir="../../"
 
 prepare-content-community-preview:
-	./scripts/prepare-content.sh --prepare-for="community-preview"
+	./scripts/prepare-content.sh --prepare-for="community-preview" --community-src-dir="../../"
 
 build-website:
 	export BUILD_FOR="website"
