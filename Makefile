@@ -10,15 +10,13 @@
 	prepare-content-website 
 	prepare-content-docs-preview 
 	prepare-content-community-preview 
-	build-website
-	build-docs-preview
-	build-community-preview
+	build
 	prepare-functions
 
-netlify-deploy-preview: clear-cache validate test prepare-content-website build-website prepare-functions
-netlify-production: clear-cache prepare-content-website build-website prepare-functions
-netlify-docs-preview: clear-cache resolve prepare-content-docs-preview build-docs-preview
-netlify-community-preview: clear-cache resolve prepare-content-community-preview build-community-preview
+netlify-deploy-preview: clear-cache validate test prepare-content-website build prepare-functions
+netlify-production: clear-cache prepare-content-website build prepare-functions
+netlify-docs-preview: clear-cache resolve prepare-content-docs-preview build
+netlify-community-preview: clear-cache resolve prepare-content-community-preview build
 
 clear-cache:
 	make -C "./tools/content-loader" clear-cache
@@ -52,13 +50,7 @@ else
 	@echo "PREVIEW_SOURCE_DIR is not a recognized env!"
 endif
 
-build-website: export BUILD_FOR="website"
-	npm run build:prod
-
-build-docs-preview: export BUILD_FOR="docs-preview"
-	npm run build:prod
-
-build-community-preview: export BUILD_FOR="community-preview"
+build:
 	npm run build:prod
 
 prepare-functions:
