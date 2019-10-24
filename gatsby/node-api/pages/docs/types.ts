@@ -12,3 +12,16 @@ export type DocGQL = ContentGQL<{
 export interface DocsVersions {
   [type: string]: string[];
 }
+
+export interface DocsPathsArgs {
+  version: string;
+  docsType: string;
+  topic: string;
+  latestVersion: string;
+}
+
+export interface DocsPaths {
+  assetsPath: string;
+  specificationsPath: string;
+  modalUrlPrefix: string;
+}

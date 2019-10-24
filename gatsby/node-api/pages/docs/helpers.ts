@@ -1,7 +1,7 @@
 import { resolve } from "path";
 import compareVersions from "compare-versions";
 
-import { DocsVersions, DocGQL } from "./types";
+import { DocsVersions, DocGQL, DocsPathsArgs, DocsPaths } from "./types";
 import {
   DocsGeneratedVersions,
   DocsBranchesVersion,
@@ -14,7 +14,13 @@ import {
   DocsContentDocs,
   DocsNavigation,
 } from "../utils";
-import { DOCS_LATEST_VERSION } from "../../../constants";
+import {
+  ASSETS_DIR,
+  DOCS_DIR,
+  DOCS_SPECIFICATIONS_PATH,
+  DOCS_PATH_PREFIX,
+  DOCS_LATEST_VERSION,
+} from "../../../constants";
 import {
   GraphQLFunction,
   CreatePageFn,
@@ -173,4 +179,48 @@ export const sortGroupOfNavigation = (
   });
 
   return sortedNavigation;
+};
+
+export const prepareWebsitePaths = ({
+  version,
+  latestVersion,
+  docsType,
+  topic,
+}: DocsPathsArgs): DocsPaths => {
+  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
+  }/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
+  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
+  }/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const modalUrlPrefix = `/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+
+  return {
+    assetsPath,
+    specificationsPath,
+    modalUrlPrefix,
+  };
+};
+
+export const preparePreviewPaths = ({
+  version,
+  latestVersion,
+  docsType,
+  topic,
+}: DocsPathsArgs): DocsPaths => {
+  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
+  }/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
+  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
+  }/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const modalUrlPrefix = `/${DOCS_PATH_PREFIX}/${
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
+  }/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+
+  return {
+    assetsPath,
+    specificationsPath,
+    modalUrlPrefix,
+  };
 };
