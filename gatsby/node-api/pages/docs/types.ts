@@ -23,5 +23,7 @@ export interface DocsPathsArgs {
 export interface DocsPaths {
   assetsPath: string;
   specificationsPath: string;
+  pagePath: string;
+  rootPagePath: string;
   modalUrlPrefix: string;
 }

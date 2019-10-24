@@ -35,6 +35,7 @@ export const createDocsPages = async ({
     buildFor === BuildFor.DOCS_PREVIEW
       ? preparePreviewPaths
       : prepareWebsitePaths;
+
   const preparedData = await prepareData({ graphql });
   if (!preparedData) {
     return;
@@ -49,21 +50,27 @@ export const createDocsPages = async ({
       const topics = content[docsType];
 
       Object.keys(topics).map(topic => {
-        const { assetsPath, specificationsPath, modalUrlPrefix } = preparePaths(
-          {
-            version,
-            latestVersion: latestVersion || "",
-            docsType,
-            topic,
-          },
-        );
+        const {
+          assetsPath,
+          specificationsPath,
+          modalUrlPrefix,
+          pagePath,
+          rootPagePath,
+        } = preparePaths({
+          version,
+          latestVersion: latestVersion || "",
+          docsType,
+          topic,
+        });
 
         let fixedContent = content[docsType][topic];
-        fixedContent = fixLinks({
-          content: fixedContent,
-          version,
-          latestVersion,
-        });
+        if (buildFor !== BuildFor.DOCS_PREVIEW) {
+          fixedContent = fixLinks({
+            content: fixedContent,
+            version,
+            latestVersion,
+          });
+        }
         const specifications = fixedContent.specifications.map(
           specification => ({
             ...specification,
@@ -85,7 +92,12 @@ export const createDocsPages = async ({
         };
 
         const createPage = createDocsPage(createPageFn, context);
-        createComponentDocsPage({ createPage, context });
+        createComponentDocsPage({
+          createPage,
+          context,
+          path: pagePath,
+          rootPath: rootPagePath,
+        });
         createModalDocsPage({ createPage, context });
       });
     });

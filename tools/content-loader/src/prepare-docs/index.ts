@@ -105,7 +105,14 @@ const prepareDocs = async (coreConfig: CoreConfig) => {
 };
 
 const preparePreviewDocs = async () => {
-  const outputPath = resolve(docsConfig.outputPath);
+  const previewOutPath = "preview";
+
+  let outputPath = resolve(docsConfig.outputPath);
+  if (!outputPath.endsWith(previewOutPath)) {
+    outputPath = outputPath.endsWith("/")
+      ? `${outputPath}${previewOutPath}`
+      : `${outputPath}/${previewOutPath}`;
+  }
   const sourcePath = resolve(docsConfig.sourcePath);
   const outputDocsVersion = resolve(docsConfig.outputDocsVersion);
 
@@ -124,18 +131,21 @@ const preparePreviewDocs = async () => {
     throw err;
   }
 
-  // console.log(`Generating documentation versions file to ${outputDocsVersion}`);
-  // [err] = await to(
-  //   DocsVersions.generate(
-  //     {
-  //       branches
-  //     },
-  //     outputDocsVersion,
-  //   ),
-  // );
-  // if (err) {
-  //   throw err;
-  // }
+  // :(
+  const branches = new Map<string, string>([[previewOutPath, ""]]);
+
+  console.log(`Generating documentation versions file to ${outputDocsVersion}`);
+  [err] = await to(
+    DocsVersions.generate(
+      {
+        branches,
+      },
+      outputDocsVersion,
+    ),
+  );
+  if (err) {
+    throw err;
+  }
 };
 
 export default async (coreConfig: CoreConfig) => {

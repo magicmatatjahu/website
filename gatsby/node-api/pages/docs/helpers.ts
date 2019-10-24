@@ -60,7 +60,7 @@ export const prepareData = async ({ graphql }: PrepareDataArgs) => {
     console.error("No docs versions found");
     return;
   }
-  const latestVersion = versions.releases[0];
+  const latestVersion = checkLatestVersion(versions);
 
   const docs = await getContent<DocGQL>(
     graphql,
@@ -109,6 +109,16 @@ const getDocsVersions = (versions: DocsGeneratedVersions): DocsVersions => {
   appendDocsType("branches", versions.branches, versionsByType);
 
   return versionsByType;
+};
+
+const checkLatestVersion = (versions: DocsVersions): string => {
+  if (versions.releases && versions.releases.length) {
+    return versions.releases[0];
+  }
+  if (versions.branches && versions.branches.length) {
+    return versions.branches[0];
+  }
+  return versions.prereleases[0];
 };
 
 const appendDocsType = (
@@ -187,17 +197,22 @@ export const prepareWebsitePaths = ({
   docsType,
   topic,
 }: DocsPathsArgs): DocsPaths => {
-  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${
-    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
-  }/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
-  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${
-    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
-  }/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
-  const modalUrlPrefix = `/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const v =
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version;
+
+  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${v}/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
+  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${v}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const pagePath = `/${DOCS_PATH_PREFIX}/${
+    version ? `${version}/` : ""
+  }${docsType}/${topic}`;
+  const rootPagePath = `/${DOCS_PATH_PREFIX}/${version}`;
+  const modalUrlPrefix = `/${DOCS_PATH_PREFIX}/${v}/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
 
   return {
     assetsPath,
     specificationsPath,
+    pagePath,
+    rootPagePath,
     modalUrlPrefix,
   };
 };
@@ -208,19 +223,20 @@ export const preparePreviewPaths = ({
   docsType,
   topic,
 }: DocsPathsArgs): DocsPaths => {
-  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${
-    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
-  }/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
-  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${
-    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
-  }/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
-  const modalUrlPrefix = `/${
-    !version || version === DOCS_LATEST_VERSION ? latestVersion : version
-  }/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const v =
+    !version || version === DOCS_LATEST_VERSION ? latestVersion : version;
+
+  const assetsPath = `/${ASSETS_DIR}${DOCS_DIR}${v}/${topic}/${DOCS_DIR}${ASSETS_DIR}`;
+  const specificationsPath = `/${ASSETS_DIR}${DOCS_DIR}${v}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
+  const pagePath = `/${version ? `${version}/` : ""}${docsType}/${topic}`;
+  const rootPagePath = `/${version}`;
+  const modalUrlPrefix = `/${docsType}/${topic}/${DOCS_SPECIFICATIONS_PATH}`;
 
   return {
     assetsPath,
     specificationsPath,
+    pagePath,
+    rootPagePath,
     modalUrlPrefix,
   };
 };
