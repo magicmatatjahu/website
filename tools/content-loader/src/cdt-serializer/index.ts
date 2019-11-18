@@ -21,6 +21,7 @@ import {
   DocsConfigSpec,
   DocsConfig,
   CLUSTER_DOCS_TOPIC,
+  CLUSTER_ASSET_GROUP,
   GROUP_NAME_LABEL,
   GROUP_ORDER_LABEL,
   ORDER_LABEL,
@@ -287,7 +288,7 @@ export class ClusterDocsTopicSerializer {
       throw new VError(err, `while getting files paths for clusterDocsTopics`);
     }
 
-    const cdtRegex = /(cdt\.(yaml|yml))$/;
+    const cdtRegex = /(cdt|cag)\.(yaml|yml))$/;
     files = files.filter(file => Boolean(cdtRegex.exec(file)));
 
     for (const file of files) {
@@ -297,7 +298,10 @@ export class ClusterDocsTopicSerializer {
         throw new VError(err, `while reading yaml ${file}`);
       }
 
-      if (!cdt.kind || cdt.kind !== CLUSTER_DOCS_TOPIC) {
+      if (
+        !cdt.kind ||
+        !(cdt.kind === CLUSTER_DOCS_TOPIC || cdt.kind === CLUSTER_ASSET_GROUP)
+      ) {
         continue;
       }
 
@@ -317,12 +321,12 @@ export class ClusterDocsTopicSerializer {
   };
 
   private extractGithubUrl = (url: string): string => {
-    const rawGithubUseContentSuffix = `https://raw.githubusercontent.com`;
-    if (!url.startsWith(rawGithubUseContentSuffix)) {
+    const rawGithubUserContentSuffix = `https://raw.githubusercontent.com`;
+    if (!url.startsWith(rawGithubUserContentSuffix)) {
       return "";
     }
 
-    let processedUrl = url.replace(rawGithubUseContentSuffix, "");
+    let processedUrl = url.replace(rawGithubUserContentSuffix, "");
     const regExp: RegExp = /^\/(.*?)\/(.*?)\/(.*?)$/;
 
     const matches = processedUrl.match(regExp);
