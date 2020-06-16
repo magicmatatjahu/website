@@ -106,9 +106,6 @@ export const prepareData = async ({ graphql, buildFor }: PrepareDataArgs) => {
   }
 
   // for copying data
-  docsArch[DOCS_LATEST_VERSION] = JSON.parse(
-    JSON.stringify(docsArch[latestVersion]),
-  );
   docsArch[""] = JSON.parse(JSON.stringify(docsArch[latestVersion]));
 
   return {
