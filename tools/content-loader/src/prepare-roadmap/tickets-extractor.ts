@@ -7,27 +7,20 @@ import { getUnique, writeToJson, removeHTMLComments } from "../helpers";
 import {
   Tickets,
   Repository,
-  Release,
   ReleasesIssuesData,
   Capability,
+  Milestone,
   ReleaseIssue,
   Issue,
 } from "./types";
 
 export interface ExtractTicketsArgs {
-  repositoriesWithEpics: Repository[];
-  releaseIssuesData: ReleasesIssuesData;
-  releases: Release[];
   capabilities: Capability[];
+  milestones: Milestone[];
 }
 
 export class TicketsExtractor {
-  extractTickets = ({
-    repositoriesWithEpics,
-    releaseIssuesData,
-    releases,
-    capabilities,
-  }: ExtractTicketsArgs) => {
+  extractTickets = ({ capabilities, milestones }: ExtractTicketsArgs) => {
     const filteredReleaseDate: ReleasesIssuesData = this.filterIssuesByEpics(
       repositoriesWithEpics,
       releaseIssuesData,
@@ -49,11 +42,11 @@ export class TicketsExtractor {
     }
   };
 
-  removeDuplicatedReleases = (releases: Release[]): Release[] =>
-    getUnique<Release>(releases, "release_id");
+  removeDuplicatedMilestones = (milestones: Milestone[]): Milestone[] =>
+    getUnique<Milestone>(milestones, "id");
 
-  removeClosedReleases = (releases: Release[]): Release[] =>
-    releases.filter(release => release.state === "open");
+  removeClosedMilestones = (milestones: Milestone[]): Milestone[] =>
+    milestones.filter(milestone => milestone.state === "OPEN");
 
   private filterIssuesByEpics = (
     repositoriesWithEpics: Repository[],
@@ -167,14 +160,13 @@ export class TicketsExtractor {
 
   private extractIssue = (
     issue: Issue,
-    release: Release,
+    milestone: Milestone,
     repository: Repository,
     capability: Capability,
   ): Issue => ({
     ...issue,
     body: removeHTMLComments(issue.body),
-    dueDate: release.desired_end_date,
-    zenHubUrl: this.createZenHubUrl(repository.name, issue.number),
+    dueDate: milestone.desired_end_date,
     release,
     repository: {
       ...repository,
@@ -182,16 +174,6 @@ export class TicketsExtractor {
     },
     capability,
   });
-
-  private createZenHubUrl = (
-    repository: string,
-    issueNumber: number,
-  ): string => {
-    const prefix: string = roadmapConfig.zenHubUrlPrefix.endsWith("/")
-      ? roadmapConfig.zenHubUrlPrefix
-      : `${roadmapConfig.zenHubUrlPrefix}/`;
-    return `${prefix}${coreConfig.organization}/${repository}/${issueNumber}`;
-  };
 }
 
 export default new TicketsExtractor();

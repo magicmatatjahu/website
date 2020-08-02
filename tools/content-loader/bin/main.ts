@@ -49,7 +49,6 @@ const prepareRoadmapContentFn = async () => {
   GitClient.withConfig(config, roadmapConfig.tempPath);
   GitHubClient.withConfig(config);
   GitHubGraphQLClient.withConfig(config);
-  ZenHubCLient.withConfig(roadmapConfig.zenHubToken);
 
   const [err] = await to(prepareRoadmapContent(config));
   if (err) throw err;
@@ -65,21 +64,15 @@ const main = async () => {
     );
   }
 
-  if (!roadmapConfig.zenHubToken) {
-    console.warn(
-      "APP_ZEN_HUB_TOKEN is not defined. Token is not necessary, but is needed for preparing content for Roadmap.",
-    );
-  }
+  // [err] = await to(prepareDocsContentFn());
+  // if (err) {
+  //   errors.push(new VError(err, "while preparing documentation"));
+  // }
 
-  [err] = await to(prepareDocsContentFn());
-  if (err) {
-    errors.push(new VError(err, "while preparing documentation"));
-  }
-
-  [err] = await to(prepareCommunityContentFn());
-  if (err) {
-    errors.push(new VError(err, "while preparing content for community"));
-  }
+  // [err] = await to(prepareCommunityContentFn());
+  // if (err) {
+  //   errors.push(new VError(err, "while preparing content for community"));
+  // }
 
   [err] = await to(prepareRoadmapContentFn());
   if (err) {

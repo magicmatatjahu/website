@@ -4,18 +4,19 @@ export interface Tickets {
   };
 }
 
-export interface Release {
-  release_id: string;
+export interface Milestone {
+  id: string | number;
+  state: "OPEN" | "CLOSED";
   title: string;
-  start_date: string;
-  desired_end_date: string;
-  state: "open" | "closed";
+  description: string;
+  dueOn: string;
+  issues: Issue[];
 }
 
 export interface Repository {
   name: string;
   id: string | number;
-  issues: Issue[];
+  milestones: Milestone[];
 }
 
 export interface Capability {
@@ -30,9 +31,8 @@ export interface Issue {
   number: number;
   labels: string[];
   githubUrl: string;
-  zenHubUrl: string;
   dueDate: string;
-  release: Release;
+  milestone: Milestone;
   repository: Repository;
   capability: Capability;
 }

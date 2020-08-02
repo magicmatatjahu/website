@@ -1,4 +1,3 @@
-import { writeJSON } from "fs-extra";
 import to from "await-to-js";
 import { VError } from "verror";
 
@@ -6,17 +5,8 @@ import coreConfig from "../config";
 import roadmapConfig from "./config";
 
 import GitHubGraphQLClient from "../github-client/github-graphql-client";
-import ZenHubClient from "../github-client/zenhub-client";
 
-import TicketsExtractor from "./tickets-extractor";
-
-import {
-  Repository,
-  Release,
-  Issue,
-  ReleaseIssue,
-  ReleasesIssuesData,
-} from "./types";
+import { Repository, Milestone } from "./types";
 
 export class TicketsFetcher {
   queryRepositories = async (): Promise<Repository[]> => {
@@ -52,7 +42,7 @@ export class TicketsFetcher {
         const result: Repository = {
           name: repo.node.name,
           id: repo.node.databaseId,
-          issues: [],
+          milestones: [],
         };
 
         return result;
@@ -62,12 +52,15 @@ export class TicketsFetcher {
     return repositories;
   };
 
-  queryEpicIssues = async (repository: Repository): Promise<Issue[]> => {
+  queryRepoMilestones = async (
+    repository: Repository,
+  ): Promise<Milestone[]> => {
     const query = `
       query epics(
         $organization: String!, 
         $repositoryName: String!, 
-        $labels: [String!], 
+        $firstMilestones: Int!, 
+        $labels: [String!],
         $firstIssues: Int!, 
         $firstLabels: Int!, 
         $issuesStates: [IssueState!]
@@ -75,17 +68,28 @@ export class TicketsFetcher {
         organization(login: $organization) {
           repository(name: $repositoryName) {
             name
-            issues(first: $firstIssues, labels: $labels, states: $issuesStates) {
+            milestones(first: $firstMilestones) {
               edges {
                 node {
+                  id
+                  state
                   title
-                  body
-                  url
-                  number
-                  labels(first: $firstLabels) {
+                  description
+                  dueOn
+                  issues(first: $firstIssues, labels: $labels, states: $issuesStates) {
                     edges {
                       node {
-                        name
+                        title
+                        body
+                        url
+                        number
+                        labels(first: $firstLabels) {
+                          edges {
+                            node {
+                              name
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -97,12 +101,14 @@ export class TicketsFetcher {
       }
     `;
 
+    const firstMilestones = 10;
     const firstLabels = 7;
     const firstIssues = Math.floor(500 / firstLabels);
 
     const options = {
       organization: coreConfig.organization,
       labels: roadmapConfig.labels,
+      firstMilestones,
       firstIssues,
       firstLabels,
       issuesStates: ["OPEN"],
@@ -120,6 +126,25 @@ export class TicketsFetcher {
         `while query epics for repository: ${repository.name}`,
       );
     }
+
+    // const issues: Issue[] = data.organization.repository.issues.edges.map(
+    //   issue => {
+    //     const node = issue.node;
+    //     const labels: string[] = node.labels.edges
+    //       .map(label => label.node.name)
+    //       .filter((label: string) => !roadmapConfig.labels.includes(label));
+
+    //     return {
+    //       ...node,
+    //       githubUrl: node.url,
+    //       labels,
+    //       repository: {
+    //         ...repository,
+    //         issues: [],
+    //       },
+    //     } as Issue;
+    //   },
+    // );
 
     const issues: Issue[] = data.organization.repository.issues.edges.map(
       issue => {
@@ -143,57 +168,25 @@ export class TicketsFetcher {
     return issues;
   };
 
-  queryEpics = async (repositories: Repository[]): Promise<Repository[]> => {
+  queryMilestones = async (
+    repositories: Repository[],
+  ): Promise<Repository[]> => {
     const result: Repository[] = [];
     for (const repository of repositories) {
-      const [err, issues] = await to<Issue[]>(this.queryEpicIssues(repository));
+      const [err, milestones] = await to<Milestone[]>(
+        this.queryRepoMilestones(repository),
+      );
       if (err) {
         throw err;
       }
 
       result.push({
         ...repository,
-        issues,
+        milestones,
       });
     }
 
     return result;
-  };
-
-  queryRepositoriesReleases = async (
-    repositories: Repository[],
-  ): Promise<Release[]> => {
-    let releases: Release[] = [];
-    for (const repository of repositories) {
-      const [err, data] = await to<Release[]>(
-        ZenHubClient.reportForReleases(String(repository.id)),
-      );
-      if (err) {
-        throw err;
-      }
-
-      releases = [...releases, ...data];
-    }
-    releases = TicketsExtractor.removeDuplicatedReleases(releases);
-    return TicketsExtractor.removeClosedReleases(releases);
-  };
-
-  queryIssuesReleases = async (
-    releases: Release[],
-  ): Promise<ReleasesIssuesData> => {
-    const releaseIssues: ReleasesIssuesData = {};
-
-    for (const release of releases) {
-      const [err, data] = await to<ReleaseIssue[]>(
-        ZenHubClient.issuesForRelease(String(release.release_id)),
-      );
-      if (err) {
-        throw err;
-      }
-
-      releaseIssues[release.title] = data;
-    }
-    return releaseIssues;
   };
 }
 

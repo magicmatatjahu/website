@@ -6,15 +6,9 @@ import roadmapConfig, { RoadmapConfig } from "./config";
 
 import CapabilitiesFetcher from "./capabilities-fetcher";
 import TicketsFetcher from "./tickets-fetcher";
-import TicketsExtractor from "./tickets-extractor";
+// import TicketsExtractor from "./tickets-extractor";
 
-import {
-  Capability,
-  Repository,
-  Release,
-  ReleasesIssuesData,
-  Tickets,
-} from "./types";
+import { Capability, Repository, ReleasesIssuesData, Tickets } from "./types";
 
 const prepareRoadmapContent = async (coreConfig: CoreConfig) => {
   const capabilitiesDir = resolve(
@@ -25,17 +19,17 @@ const prepareRoadmapContent = async (coreConfig: CoreConfig) => {
 
   let err: Error | null;
 
-  [err] = await to(CapabilitiesFetcher.copyCommunityRepository(coreConfig));
-  if (err) {
-    throw err;
-  }
+  // [err] = await to(CapabilitiesFetcher.copyCommunityRepository(coreConfig));
+  // if (err) {
+  //   throw err;
+  // }
 
-  [err] = await to(
-    CapabilitiesFetcher.copyCapabilities(capabilitiesDir, capabilitiesOutput),
-  );
-  if (err) {
-    throw err;
-  }
+  // [err] = await to(
+  //   CapabilitiesFetcher.copyCapabilities(capabilitiesDir, capabilitiesOutput),
+  // );
+  // if (err) {
+  //   throw err;
+  // }
 
   console.log(`Extracting metadata of capabilities`);
   let capabilities: Capability[] = [];
@@ -60,37 +54,43 @@ const prepareRoadmapContent = async (coreConfig: CoreConfig) => {
     throw err;
   }
 
-  console.log(`Querying for releases`);
-  let releases: Release[];
-  [err, releases] = await to(
-    TicketsFetcher.queryRepositoriesReleases(repositories),
-  );
-  if (err) {
-    throw err;
-  }
-
-  console.log(`Querying for issues in releases`);
-  let releaseIssuesData: ReleasesIssuesData;
-  [err, releaseIssuesData] = await to(
-    TicketsFetcher.queryIssuesReleases(releases),
-  );
-  if (err) {
-    throw err;
-  }
-
-  console.log(`Generating tickets`);
-  const tickets: Tickets = TicketsExtractor.extractTickets({
-    repositoriesWithEpics,
-    releaseIssuesData,
-    releases,
-    capabilities,
+  repositoriesWithEpics.map(repo => {
+    repo.issues.map(issue => {
+      console.log(issue);
+    });
   });
 
-  console.log(`Writing tickets to ${ticketsOutput}`);
-  [err] = await to(TicketsExtractor.writeTickets(ticketsOutput, tickets));
-  if (err) {
-    throw err;
-  }
+  // console.log(`Querying for releases`);
+  // let releases: Release[];
+  // [err, releases] = await to(
+  //   TicketsFetcher.queryRepositoriesReleases(repositories),
+  // );
+  // if (err) {
+  //   throw err;
+  // }
+
+  // console.log(`Querying for issues in releases`);
+  // let releaseIssuesData: ReleasesIssuesData;
+  // [err, releaseIssuesData] = await to(
+  //   TicketsFetcher.queryIssuesReleases(releases),
+  // );
+  // if (err) {
+  //   throw err;
+  // }
+
+  // console.log(`Generating tickets`);
+  // const tickets: Tickets = TicketsExtractor.extractTickets({
+  //   repositoriesWithEpics,
+  //   releaseIssuesData,
+  //   releases,
+  //   capabilities,
+  // });
+
+  // console.log(`Writing tickets to ${ticketsOutput}`);
+  // [err] = await to(TicketsExtractor.writeTickets(ticketsOutput, tickets));
+  // if (err) {
+  //   throw err;
+  // }
 };
 
 export default async (coreConfig: CoreConfig) => {
